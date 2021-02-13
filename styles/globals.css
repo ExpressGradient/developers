@@ -2,4 +2,8 @@
 @tailwind utilities;
 @tailwind components;
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans&family=Inconsolata&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans&family=Inconsolata&display=swap");
+
+body {
+    @apply bg-blue-100 h-full min-h-screen;
+}
