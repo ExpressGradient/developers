@@ -1,8 +1,10 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
+import { signIn, useSession } from "next-auth/client";
+import { GraphQLClient } from "graphql-request";
 
 interface NavLinkProps {
     slug: string;
@@ -27,6 +29,30 @@ const NavLink: FC<NavLinkProps> = (props) => (
 
 const Header: FC = () => {
     const router = useRouter();
+    const session = useSession()[0];
+
+    useEffect(() => {
+        if (session) {
+            const { name, email, image } = session.user;
+            const mutation = /* GraphQL */ `
+                mutation UpsertUser(
+                    $name: String!
+                    $email: String
+                    $image: String
+                ) {
+                    upsertUser(name: $name, email: $email, image: $image) {
+                        id
+                        name
+                        email
+                        image
+                    }
+                }
+            `;
+            const graphQLClient = new GraphQLClient("/api/graphql");
+            graphQLClient.request(mutation, { name, email, image });
+        }
+    }, [session]);
+
     const navLinks = [
         {
             link: "Home",
@@ -60,8 +86,14 @@ const Header: FC = () => {
                 <motion.button
                     className="px-4 py-2 bg-black text-white text-sm md:text-base flex font-serif rounded shadow-md hover:text-gray-300 items-center"
                     whileTap={{ scale: 0.9 }}
+                    onClick={() => signIn("github")}
                 >
-                    <Image src="/GitHub-icon.png" width="25%" height="25%" />
+                    <Image
+                        src="/GitHub-icon.png"
+                        alt="GitHub Logo"
+                        width="25%"
+                        height="25%"
+                    />
                     <span className="ml-2">Sign in</span>
                 </motion.button>
             </nav>
