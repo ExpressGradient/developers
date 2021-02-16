@@ -39,10 +39,10 @@ const Post = objectType({
         });
         t.string("content");
         t.date("createdOn");
-        t.field("hashTag", {
+        t.list.field("hashTags", {
             type: "HashTag",
-            resolve: parent => prisma.post.findUnique({where: {id: parent.id}}).hashTag()
-        });
+            resolve: parent => prisma.post.findUnique({where: {id: parent.id}}).hashTags()
+        })
     }
 });
 
@@ -91,7 +91,11 @@ const Mutation = mutationType({
                     image
                 },
                 where: { image: image },
-                update: {}
+                update: {
+                    name,
+                    email,
+                    image
+                }
             })
         })
     }

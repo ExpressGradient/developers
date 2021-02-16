@@ -85,7 +85,7 @@ export interface NexusGenFieldTypes {
     author: NexusGenRootTypes['User'] | null; // User
     content: string | null; // String
     createdOn: NexusGenScalars['Date'] | null; // Date
-    hashTag: NexusGenRootTypes['HashTag'] | null; // HashTag
+    hashTags: Array<NexusGenRootTypes['HashTag'] | null> | null; // [HashTag]
     id: string | null; // String
     likedBy: Array<NexusGenRootTypes['User'] | null> | null; // [User]
   }
@@ -117,7 +117,7 @@ export interface NexusGenFieldTypeNames {
     author: 'User'
     content: 'String'
     createdOn: 'Date'
-    hashTag: 'HashTag'
+    hashTags: 'HashTag'
     id: 'String'
     likedBy: 'User'
   }

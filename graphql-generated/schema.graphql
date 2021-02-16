@@ -21,7 +21,7 @@ type Post {
   author: User
   content: String
   createdOn: Date
-  hashTag: HashTag
+  hashTags: [HashTag]
   id: String
   likedBy: [User]
 }

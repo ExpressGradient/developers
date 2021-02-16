@@ -66,6 +66,8 @@ const Header: FC = () => {
 
     const handleClick = () => router.push("/");
 
+    const handleSignIn = () => signIn("github");
+
     return (
         <header className="p-4 border-b-2 border-purple-800 md:flex justify-between">
             <h1
@@ -83,19 +85,31 @@ const Header: FC = () => {
                         key={index}
                     />
                 ))}
-                <motion.button
-                    className="px-4 py-2 bg-black text-white text-sm md:text-base flex font-serif rounded shadow-md hover:text-gray-300 items-center"
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => signIn("github")}
-                >
-                    <Image
-                        src="/GitHub-icon.png"
-                        alt="GitHub Logo"
-                        width="25%"
-                        height="25%"
-                    />
-                    <span className="ml-2">Sign in</span>
-                </motion.button>
+                {session ? (
+                    <button>
+                        <Image
+                            src={session.user.image}
+                            alt="profile picture"
+                            width="40%"
+                            height="40%"
+                            className="rounded-full"
+                        />
+                    </button>
+                ) : (
+                    <motion.button
+                        className="px-4 py-2 bg-black text-white text-sm md:text-base flex font-serif rounded shadow-md hover:text-gray-300 items-center"
+                        whileTap={{ scale: 0.9 }}
+                        onClick={handleSignIn}
+                    >
+                        <Image
+                            src="/GitHub-icon.png"
+                            alt="GitHub Logo"
+                            width="25%"
+                            height="25%"
+                        />
+                        <span className="ml-2">Sign in</span>
+                    </motion.button>
+                )}
             </nav>
         </header>
     );

@@ -22,14 +22,13 @@ model User {
 }
 
 model Post {
-  id        String   @id @default(cuid())
-  author    User?    @relation(name: "UserPostsCreated", references: [id], fields: [authorId])
+  id        String    @id @default(cuid())
+  author    User?     @relation(name: "UserPostsCreated", references: [id], fields: [authorId])
   authorId  String?
-  likedBy   User[]   @relation(name: "UserPostsLiked")
-  content   String   @unique
-  createdOn DateTime @default(now())
-  hashTag   HashTag  @relation(fields: [hashTagId], references: [id])
-  hashTagId String
+  likedBy   User[]    @relation(name: "UserPostsLiked")
+  content   String    @unique
+  createdOn DateTime  @default(now())
+  hashTags  HashTag[]
 
   @@map("posts")
 }
