@@ -97,7 +97,20 @@ const Mutation = mutationType({
                     image
                 }
             })
-        })
+        });
+        // TODO
+        // t.field("addLike", {
+        //     type: "User",
+        //     args: {
+        //         postId: nonNull(stringArg()),
+        //         image: nonNull(stringArg())
+        //     },
+        //     resolve: (_, { postId, image }, _ctx) => {
+        //         prisma.user.findUnique({ where: { image } }).then(user => {
+        //             const userId = user.id;
+        //         });
+        //     }
+        // });
     }
 });
 

@@ -16,7 +16,7 @@ const Feed: FC<any> = ({ propsData }) => {
                     }
                     createdOn
                     likedBy {
-                        id
+                        name
                     }
                     hashTags {
                         name

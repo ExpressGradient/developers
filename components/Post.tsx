@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
@@ -13,6 +13,8 @@ interface PostProps {
 }
 
 const Post: FC<PostProps> = (props) => {
+    const [isLiked, setIsLiked] = useState<Boolean>(false);
+
     const variants = {
         visible: (i) => ({
             opacity: 1,
@@ -33,6 +35,7 @@ const Post: FC<PostProps> = (props) => {
             variants={variants}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
+            onDragEnd={() => setIsLiked(true)}
         >
             <div className="flex items-center">
                 <Image
@@ -47,15 +50,35 @@ const Post: FC<PostProps> = (props) => {
             <p className="font-mono mt-2 text-lg md:text-2xl">
                 {props.content}
             </p>
-            <div className="flex mt-2">
-                {props.hashTags.map((hashTag, index) => (
-                    <p
-                        className="text-purple-800 underline mr-3 md:text-lg"
-                        key={index}
-                    >
-                        #{hashTag.name}
-                    </p>
-                ))}
+            <div className="mt-2 flex">
+                {isLiked ? (
+                    <Image
+                        src="/heart-fill.png"
+                        width="25%"
+                        height="15%"
+                        className="cursor-pointer"
+                        onClick={() => setIsLiked(false)}
+                    />
+                ) : (
+                    <Image
+                        src="/heart.png"
+                        width="25%"
+                        height="15%"
+                        className="cursor-pointer"
+                        onClick={() => setIsLiked(true)}
+                    />
+                )}
+                <span className="ml-2 font-mono">{props.likeCount}</span>
+                <div className="ml-8">
+                    {props.hashTags.map((hashTag, index) => (
+                        <span
+                            className="text-purple-800 underline mr-3 md:text-lg"
+                            key={index}
+                        >
+                            #{hashTag.name}
+                        </span>
+                    ))}
+                </div>
             </div>
         </motion.div>
     );
