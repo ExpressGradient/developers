@@ -1,35 +1,10 @@
 import { FC } from "react";
-import useSWR from "swr";
-import fetcher from "../components/fetcher";
 import Post from "../components/Post";
 
-const Feed: FC<any> = ({ propsData }) => {
-    const { data, error } = useSWR(
-        /* GraphQL */ `
-            {
-                posts {
-                    id
-                    content
-                    author {
-                        image
-                        name
-                    }
-                    createdOn
-                    likedBy {
-                        name
-                    }
-                    hashTags {
-                        name
-                    }
-                }
-            }
-        `,
-        fetcher
-    );
-
+const Feed: FC<any> = ({ data }) => {
     return (
         <div className="mt-4">
-            <h1 className="text-center font-serif text-3xl text-purple-800 md:text-5xl">
+            <h1 className="text-center font-serif text-3xl text-purple-800 mb-3 md:text-4xl">
                 Feed
             </h1>
             <ul className="md:w-1/2 mx-auto">

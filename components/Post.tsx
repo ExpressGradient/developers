@@ -1,6 +1,35 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState, Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+
+interface LikeButtonProps {
+    isLiked: boolean;
+    setIsLiked: Dispatch<SetStateAction<boolean>>;
+}
+
+const LikeButton: FC<LikeButtonProps> = (props) => {
+    if (props.isLiked) {
+        return (
+            <Image
+                src="/heart-fill.png"
+                width="30%"
+                height="30%"
+                className="cursor-pointer"
+                onClick={() => props.setIsLiked(false)}
+            />
+        );
+    }
+
+    return (
+        <Image
+            src="/heart.png"
+            width="30%"
+            height="30%"
+            className="cursor-pointer"
+            onClick={() => props.setIsLiked(true)}
+        />
+    );
+};
 
 interface PostProps {
     author: string;
@@ -13,7 +42,7 @@ interface PostProps {
 }
 
 const Post: FC<PostProps> = (props) => {
-    const [isLiked, setIsLiked] = useState<Boolean>(false);
+    const [isLiked, setIsLiked] = useState<boolean>(false);
 
     const variants = {
         visible: (i) => ({
@@ -28,7 +57,7 @@ const Post: FC<PostProps> = (props) => {
 
     return (
         <motion.div
-            className="bg-white m-4 p-4 rounded shadow font-serif"
+            className="bg-white mb-6 mx-4 md:mx-0 p-4 rounded shadow font-serif relative"
             custom={props.index}
             initial="hidden"
             animate="visible"
@@ -47,38 +76,21 @@ const Post: FC<PostProps> = (props) => {
                 <p className="mx-2 md:text-lg">{props.author}</p>
                 <p className="text-sm text-gray-500">on {props.createdOn}</p>
             </div>
-            <p className="font-mono mt-2 text-lg md:text-2xl">
+            <p className="font-mono mt-2 text-lg break-words">
                 {props.content}
             </p>
-            <div className="mt-2 flex">
-                {isLiked ? (
-                    <Image
-                        src="/heart-fill.png"
-                        width="25%"
-                        height="15%"
-                        className="cursor-pointer"
-                        onClick={() => setIsLiked(false)}
-                    />
-                ) : (
-                    <Image
-                        src="/heart.png"
-                        width="25%"
-                        height="15%"
-                        className="cursor-pointer"
-                        onClick={() => setIsLiked(true)}
-                    />
-                )}
-                <span className="ml-2 font-mono">{props.likeCount}</span>
-                <div className="ml-8">
-                    {props.hashTags.map((hashTag, index) => (
-                        <span
-                            className="text-purple-800 underline mr-3 md:text-lg"
-                            key={index}
-                        >
-                            #{hashTag.name}
-                        </span>
-                    ))}
-                </div>
+            <ul className="flex flex-wrap my-3">
+                {props.hashTags.map((hashTag, index) => (
+                    <li
+                        key={index}
+                        className="mr-2 underline text-purple-900 hover:text-purple-500 cursor-pointer"
+                    >
+                        #{hashTag.name}
+                    </li>
+                ))}
+            </ul>
+            <div className="absolute p-2 -bottom-6 right-1/2 rounded-full bg-blue-100">
+                <LikeButton isLiked={isLiked} setIsLiked={setIsLiked} />
             </div>
         </motion.div>
     );

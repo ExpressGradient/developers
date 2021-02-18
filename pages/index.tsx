@@ -3,9 +3,9 @@ import Feed from "../components/Feed";
 import { GetServerSideProps } from "next";
 import { gql, GraphQLClient } from "graphql-request";
 
-const Home: FC = (props) => (
+const Home: FC<any> = (props) => (
     <main>
-        <Feed propsData={props} />
+        <Feed data={props.data} />
     </main>
 );
 
@@ -16,6 +16,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             posts {
                 id
                 content
+                createdOn
+                author {
+                    id
+                    name
+                    image
+                }
+                likedBy {
+                    id
+                }
+                hashTags {
+                    id
+                    name
+                }
             }
         }
     `);
