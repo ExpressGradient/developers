@@ -1,9 +1,9 @@
-import React, { FC, useEffect } from "react";
+import { FC } from "react";
 import useSWR from "swr";
 import fetcher from "../components/fetcher";
 import Post from "../components/Post";
 
-const Feed: FC = () => {
+const Feed: FC<any> = ({ propsData }) => {
     const { data, error } = useSWR(
         /* GraphQL */ `
             {
@@ -27,12 +27,6 @@ const Feed: FC = () => {
         fetcher
     );
 
-    useEffect(() => {
-        if (data) {
-            console.log(data);
-        }
-    });
-
     return (
         <div className="mt-4">
             <h1 className="text-center font-serif text-3xl text-purple-800 md:text-5xl">
@@ -40,7 +34,7 @@ const Feed: FC = () => {
             </h1>
             <ul className="md:w-1/2 mx-auto">
                 {data
-                    ? data.posts.map((post) => (
+                    ? data.posts.map((post, index) => (
                           <Post
                               author={post.author.name}
                               content={post.content}
@@ -49,6 +43,7 @@ const Feed: FC = () => {
                               authorImage={post.author.image}
                               createdOn={post.createdOn}
                               key={post.id}
+                              index={index}
                           />
                       ))
                     : "Loading"}
