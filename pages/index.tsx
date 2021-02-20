@@ -1,37 +1,46 @@
 import { FC } from "react";
 import Feed from "../components/Feed";
 import { GetServerSideProps } from "next";
-import { gql, GraphQLClient } from "graphql-request";
+import { gql, GraphQLClient, request } from "graphql-request";
+import useSWR from "swr";
 
-const Home: FC<any> = (props) => (
-    <main>
-        <Feed data={props.data} />
-    </main>
-);
+const getPosts = gql`
+    query GetPosts {
+        posts {
+            id
+            content
+            createdOn
+            author {
+                id
+                name
+                image
+            }
+            likedBy {
+                id
+            }
+            hashTags {
+                id
+                name
+            }
+        }
+    }
+`;
+
+const Home: FC<any> = (props) => {
+    const { data, error } = useSWR(getPosts, {
+        initialData: props.data,
+    });
+
+    return (
+        <main>
+            <Feed data={data} />
+        </main>
+    );
+};
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const graphQLClient = new GraphQLClient(process.env.API_URL);
-    const data = await graphQLClient.request(gql`
-        query GetPosts {
-            posts {
-                id
-                content
-                createdOn
-                author {
-                    id
-                    name
-                    image
-                }
-                likedBy {
-                    id
-                }
-                hashTags {
-                    id
-                    name
-                }
-            }
-        }
-    `);
+    const data = await graphQLClient.request(getPosts);
 
     if (data) {
         return {

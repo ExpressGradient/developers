@@ -79,6 +79,8 @@ export interface NexusGenFieldTypes {
     postsUnderHashTag: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
   }
   Mutation: { // field return type
+    addLike: NexusGenRootTypes['Post'] | null; // Post
+    removeLike: NexusGenRootTypes['Post'] | null; // Post
     upsertUser: NexusGenRootTypes['User'] | null; // User
   }
   Post: { // field return type
@@ -111,6 +113,8 @@ export interface NexusGenFieldTypeNames {
     postsUnderHashTag: 'Post'
   }
   Mutation: { // field return type name
+    addLike: 'Post'
+    removeLike: 'Post'
     upsertUser: 'User'
   }
   Post: { // field return type name
@@ -138,8 +142,17 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    addLike: { // args
+      postId: string; // String!
+      userId: string; // String!
+    }
+    removeLike: { // args
+      postId: string; // String!
+      userId: string; // String!
+    }
     upsertUser: { // args
       email?: string | null; // String
+      id: string; // String!
       image?: string | null; // String
       name: string; // String!
     }

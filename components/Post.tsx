@@ -1,48 +1,50 @@
-import { FC, useState, Dispatch, SetStateAction } from "react";
+import { FC, useState, useEffect, useContext, useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { gql, GraphQLClient } from "graphql-request";
+import { UserContext } from "./UserContext";
 
 interface LikeButtonProps {
     isLiked: boolean;
-    setIsLiked: Dispatch<SetStateAction<boolean>>;
+    actionToRun: () => void;
 }
 
-const LikeButton: FC<LikeButtonProps> = (props) => {
-    if (props.isLiked) {
-        return (
-            <Image
-                src="/heart-fill.png"
-                width="30%"
-                height="30%"
-                className="cursor-pointer"
-                onClick={() => props.setIsLiked(false)}
-            />
-        );
-    }
-
-    return (
-        <Image
-            src="/heart.png"
-            width="30%"
-            height="30%"
-            className="cursor-pointer"
-            onClick={() => props.setIsLiked(true)}
-        />
-    );
-};
+const LikeButton: FC<LikeButtonProps> = (props) => (
+    <Image
+        src={props.isLiked ? "/heart-fill.png" : "/heart.png"}
+        alt="Post Like Image"
+        width="30%"
+        height="30%"
+        className="cursor-pointer"
+        onClick={props.actionToRun}
+    />
+);
 
 interface PostProps {
+    id: string;
+    authorId: string;
     author: string;
     authorImage: string;
     hashTags: any;
     content: string;
-    likeCount: number;
+    likedBy: any;
     createdOn: string;
     index: number;
 }
 
 const Post: FC<PostProps> = (props) => {
     const [isLiked, setIsLiked] = useState<boolean>(false);
+    const { user } = useContext(UserContext);
+    const isLikedRef = useRef<boolean>(false);
+
+    const likedUsers: string[] = props.likedBy.map((likedUser) => likedUser.id);
+    useEffect(() => {
+        if (Object.keys(user).length !== 0) {
+            if (likedUsers.includes(user.id)) {
+                setIsLiked(true);
+            }
+        }
+    }, [user]);
 
     const variants = {
         visible: (i) => ({
@@ -55,6 +57,30 @@ const Post: FC<PostProps> = (props) => {
         hidden: { opacity: 0 },
     };
 
+    const handleLike = () => setIsLiked(!isLiked);
+
+    useEffect(() => {
+        if (isLikedRef.current && Object.keys(user).length !== 0) {
+            const graphqlClient = new GraphQLClient("/api/graphql");
+            const mutation = gql`
+                mutation ${
+                    isLiked ? "AddLike" : "RemoveLike"
+                }($postId: String!, $userId: String!) {
+                    ${
+                        isLiked ? "addLike" : "removeLike"
+                    }(postId: $postId, userId: $userId) {
+                        id
+                    }
+                }
+            `;
+            graphqlClient.request(mutation, {
+                postId: props.id,
+                userId: user.id,
+            });
+        }
+        isLikedRef.current = true;
+    }, [isLiked]);
+
     return (
         <motion.div
             className="bg-white mb-6 mx-4 md:mx-0 p-4 rounded shadow font-serif relative"
@@ -64,7 +90,7 @@ const Post: FC<PostProps> = (props) => {
             variants={variants}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
-            onDragEnd={() => setIsLiked(true)}
+            onDragEnd={handleLike}
         >
             <div className="flex items-center">
                 <Image
@@ -79,18 +105,28 @@ const Post: FC<PostProps> = (props) => {
             <p className="font-mono mt-2 text-lg break-words">
                 {props.content}
             </p>
-            <ul className="flex flex-wrap my-3">
-                {props.hashTags.map((hashTag, index) => (
-                    <li
-                        key={index}
-                        className="mr-2 underline text-purple-900 hover:text-purple-500 cursor-pointer"
-                    >
-                        #{hashTag.name}
-                    </li>
-                ))}
-            </ul>
+            <div className="flex flex-wrap my-3">
+                {"{"}
+                <p className="font-serif mx-2">
+                    <span className="text-green-800">"likes": </span>
+                    {props.likedBy.length},
+                </p>
+                <p className="font-serif text-green-800 mr-2">"hashTags": </p>
+                <ul className="flex flex-wrap">
+                    {props.hashTags.map((hashTag, index) => (
+                        <li
+                            key={index}
+                            className="mr-2 underline text-purple-900 hover:text-purple-500 cursor-pointer"
+                        >
+                            #{hashTag.name}
+                            {index + 1 !== props.hashTags.length ? "," : ""}
+                        </li>
+                    ))}
+                </ul>
+                {"}"}
+            </div>
             <div className="absolute p-2 -bottom-6 right-1/2 rounded-full bg-blue-100">
-                <LikeButton isLiked={isLiked} setIsLiked={setIsLiked} />
+                <LikeButton isLiked={isLiked} actionToRun={handleLike} />
             </div>
         </motion.div>
     );

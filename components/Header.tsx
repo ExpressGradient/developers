@@ -1,10 +1,12 @@
-import { FC, useEffect } from "react";
+import { FC, useContext, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import { signIn, useSession } from "next-auth/client";
 import { GraphQLClient } from "graphql-request";
+import { UserContext } from "./UserContext";
+import sha256 from "crypto-js/sha256";
 
 interface NavLinkProps {
     slug: string;
@@ -30,17 +32,25 @@ const NavLink: FC<NavLinkProps> = (props) => (
 const Header: FC = () => {
     const router = useRouter();
     const session = useSession()[0];
+    const { user, setUser } = useContext(UserContext);
 
     useEffect(() => {
         if (session) {
             const { name, email, image } = session.user;
-            const mutation = /* GraphQL */ `
+            const id: string = sha256(`${name}${email}${image}`).toString();
+            const mutation: string = /* GraphQL */ `
                 mutation UpsertUser(
+                    $id: String!
                     $name: String!
                     $email: String
                     $image: String
                 ) {
-                    upsertUser(name: $name, email: $email, image: $image) {
+                    upsertUser(
+                        id: $id
+                        name: $name
+                        email: $email
+                        image: $image
+                    ) {
                         id
                         name
                         email
@@ -49,7 +59,9 @@ const Header: FC = () => {
                 }
             `;
             const graphQLClient = new GraphQLClient("/api/graphql");
-            graphQLClient.request(mutation, { name, email, image });
+            graphQLClient
+                .request(mutation, { id, name, email, image })
+                .then((data) => setUser({ ...data.upsertUser }));
         }
     }, [session]);
 

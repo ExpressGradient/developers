@@ -9,18 +9,22 @@ const Feed: FC<any> = ({ data }) => {
             </h1>
             <ul className="md:w-1/2 mx-auto">
                 {data
-                    ? data.posts.map((post, index) => (
-                          <Post
-                              author={post.author.name}
-                              content={post.content}
-                              hashTags={post.hashTags}
-                              likeCount={post.likedBy.length}
-                              authorImage={post.author.image}
-                              createdOn={post.createdOn}
-                              key={post.id}
-                              index={index}
-                          />
-                      ))
+                    ? data.posts.map((post, index) => {
+                          return (
+                              <Post
+                                  id={post.id}
+                                  authorId={post.author.id}
+                                  author={post.author.name}
+                                  content={post.content}
+                                  hashTags={post.hashTags}
+                                  likedBy={post.likedBy}
+                                  authorImage={post.author.image}
+                                  createdOn={post.createdOn}
+                                  key={post.id}
+                                  index={index}
+                              />
+                          );
+                      })
                     : "Loading"}
             </ul>
         </div>

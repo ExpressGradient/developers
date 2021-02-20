@@ -14,7 +14,7 @@ model User {
   id           String  @id @default(cuid())
   name         String
   email        String?
-  image        String? @unique
+  image        String?
   postsCreated Post[]  @relation(name: "UserPostsCreated")
   postsLiked   Post[]  @relation(name: "UserPostsLiked")
 
@@ -26,7 +26,7 @@ model Post {
   author    User?     @relation(name: "UserPostsCreated", references: [id], fields: [authorId])
   authorId  String?
   likedBy   User[]    @relation(name: "UserPostsLiked")
-  content   String    @unique
+  content   String
   createdOn DateTime  @default(now())
   hashTags  HashTag[]
 
