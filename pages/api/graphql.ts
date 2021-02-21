@@ -142,13 +142,50 @@ const Mutation = mutationType({
                 postId: nonNull(stringArg()),
                 userId: nonNull(stringArg()),
             },
-            resolve: async (_, { postId, userId }, _ctx) =>
+            resolve: (_, { postId, userId }, _ctx) =>
                 prisma.post.update({
                     where: { id: postId },
                     data: {
                         likedBy: { disconnect: { id: userId } },
                     },
                 }),
+        });
+        t.field("createPost", {
+            type: "Post",
+            args: {
+                postId: nonNull(stringArg()),
+                content: nonNull(stringArg()),
+                userId: nonNull(stringArg()),
+                hashTagString: nonNull(stringArg()),
+            },
+            resolve: async (_, { postId, content, userId, hashTagString }, _ctx) => {
+                await prisma.post.create({
+                    data: {
+                        id: postId,
+                        content,
+                        author: { connect: { id: userId } },
+                    },
+                });
+                const hashTags: string[] = hashTagString.split(",");
+                hashTags.forEach(async (hashTag) =>
+                    await prisma.hashTag.upsert({
+                        where: {
+                            name: hashTag.trim(),
+                        },
+                        update: {
+                            postsUnderHashTag: { connect: { id: postId } },
+                        },
+                        create: {
+                            name: hashTag.trim(),
+                            postsUnderHashTag: { connect: { id: postId } },
+                        },
+                    })
+                );
+                return await prisma.post.findUnique({
+                    where: { id: postId },
+                    include: { author: true, hashTags: true, likedBy: true },
+                });
+            },
         });
     },
 });

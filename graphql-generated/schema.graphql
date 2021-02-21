@@ -15,6 +15,7 @@ type HashTag {
 
 type Mutation {
   addLike(postId: String!, userId: String!): Post
+  createPost(content: String!, hashTagString: String!, postId: String!, userId: String!): Post
   removeLike(postId: String!, userId: String!): Post
   upsertUser(email: String, id: String!, image: String, name: String!): User
 }

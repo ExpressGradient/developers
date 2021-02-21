@@ -13,8 +13,8 @@ const LikeButton: FC<LikeButtonProps> = (props) => (
     <Image
         src={props.isLiked ? "/heart-fill.png" : "/heart.png"}
         alt="Post Like Image"
-        width="30%"
-        height="30%"
+        width={24}
+        height={24}
         className="cursor-pointer"
         onClick={props.actionToRun}
     />

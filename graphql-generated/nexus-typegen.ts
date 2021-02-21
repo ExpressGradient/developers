@@ -80,6 +80,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     addLike: NexusGenRootTypes['Post'] | null; // Post
+    createPost: NexusGenRootTypes['Post'] | null; // Post
     removeLike: NexusGenRootTypes['Post'] | null; // Post
     upsertUser: NexusGenRootTypes['User'] | null; // User
   }
@@ -114,6 +115,7 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     addLike: 'Post'
+    createPost: 'Post'
     removeLike: 'Post'
     upsertUser: 'User'
   }
@@ -143,6 +145,12 @@ export interface NexusGenFieldTypeNames {
 export interface NexusGenArgTypes {
   Mutation: {
     addLike: { // args
+      postId: string; // String!
+      userId: string; // String!
+    }
+    createPost: { // args
+      content: string; // String!
+      hashTagString: string; // String!
       postId: string; // String!
       userId: string; // String!
     }
