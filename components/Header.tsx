@@ -17,7 +17,7 @@ interface NavLinkProps {
 const NavLink: FC<NavLinkProps> = (props) => (
     <Link href={props.slug}>
         <motion.a
-            className={`text-sm md:text-base text-purple-800 px-4 py-2 font-serif md:mr-4 md:cursor-pointer ${
+            className={`text-sm md:text-base text-purple-800 px-4 py-2 font-serif md:mr-4 cursor-pointer ${
                 props.isActive
                     ? "border-2 border-purple-800 rounded"
                     : "border-2 border-transparent"
@@ -102,8 +102,8 @@ const Header: FC = () => {
                         <Image
                             src={session.user.image}
                             alt="profile picture"
-                            width="40%"
-                            height="40%"
+                            width={48}
+                            height={48}
                             className="rounded-full"
                         />
                     </button>

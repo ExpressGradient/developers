@@ -95,8 +95,9 @@ const Post: FC<PostProps> = (props) => {
             <div className="flex items-center">
                 <Image
                     src={props.authorImage}
-                    width="25%"
-                    height="25%"
+                    alt="Author profile picture"
+                    width={32}
+                    height={32}
                     className="rounded-full col-span-1"
                 />
                 <p className="mx-2 md:text-lg">{props.author}</p>

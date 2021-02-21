@@ -1,11 +1,12 @@
 import { FC, useContext, useState } from "react";
 import Feed from "../components/Feed";
 import { GetServerSideProps } from "next";
-import { gql, GraphQLClient } from "graphql-request";
+import request, { gql, GraphQLClient } from "graphql-request";
 import useSWR from "swr";
 import Image from "next/image";
 import CreatePostModal from "../components/CreatePostModal";
 import { UserContext } from "../components/UserContext";
+import { PrismaClient } from "@prisma/client";
 
 const getPosts = gql`
     query GetPosts {
@@ -29,9 +30,11 @@ const getPosts = gql`
     }
 `;
 
+const fetcher = (query) => request("/api/graphql", query);
+
 const Home: FC<any> = (props) => {
-    const { data, error } = useSWR(getPosts, {
-        initialData: props.data,
+    const { data, error } = useSWR(getPosts, fetcher, {
+        initialData: props,
     });
     const { user, setUser } = useContext(UserContext);
 
@@ -40,7 +43,7 @@ const Home: FC<any> = (props) => {
     return (
         <main>
             <div className={`z-0 ${showModal ? "opacity-50" : "opacity-100"}`}>
-                <Feed data={data} />
+                {data ? <Feed data={data} /> : ""}
             </div>
             {Object.keys(user).length !== 0 ? (
                 <>
@@ -66,16 +69,19 @@ const Home: FC<any> = (props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const graphQLClient = new GraphQLClient(process.env.API_URL);
-    const data = await graphQLClient.request(getPosts);
+    const prisma = new PrismaClient();
+    let posts = await prisma.post.findMany({
+        include: { author: true, likedBy: true, hashTags: true },
+    });
+    posts = JSON.parse(JSON.stringify(posts));
 
-    if (data) {
+    if (posts) {
         return {
-            props: { data },
+            props: { posts: [...posts] },
         };
     }
 
-    return { props: {} };
+    return { props: null };
 };
 
 export default Home;
