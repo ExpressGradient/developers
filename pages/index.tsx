@@ -1,7 +1,7 @@
 import { FC, useContext, useState } from "react";
 import Feed from "../components/Feed";
 import { GetServerSideProps } from "next";
-import request, { gql, GraphQLClient } from "graphql-request";
+import request, { gql } from "graphql-request";
 import useSWR from "swr";
 import Image from "next/image";
 import CreatePostModal from "../components/CreatePostModal";

@@ -7,7 +7,7 @@ const Feed: FC<any> = ({ data }) => {
             <h1 className="text-center font-serif text-3xl text-purple-800 mb-3 md:text-4xl">
                 Feed
             </h1>
-            <ul className="md:w-1/2 mx-auto">
+            <div className="md:w-1/2 mx-auto">
                 {data
                     ? data.posts
                           .slice(0)
@@ -29,7 +29,7 @@ const Feed: FC<any> = ({ data }) => {
                               );
                           })
                     : "Loading"}
-            </ul>
+            </div>
         </div>
     );
 };
