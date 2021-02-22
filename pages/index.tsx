@@ -39,7 +39,7 @@ const Home: FC<any> = (props) => {
     return (
         <main>
             <div className={`z-0 ${showModal ? "opacity-50" : "opacity-100"}`}>
-                {data ? <Feed data={data} /> : ""}
+                {data ? <Feed data={data} /> : "Loading"}
             </div>
             {Object.keys(user).length !== 0 ? (
                 <>
