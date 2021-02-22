@@ -5,6 +5,7 @@ import useSWR from "swr";
 import Image from "next/image";
 import CreatePostModal from "../components/CreatePostModal";
 import { UserContext } from "../components/UserContext";
+import LoadingFeed from "../components/Loading";
 
 const getPosts = gql`
     query GetPosts {
@@ -39,7 +40,7 @@ const Home: FC<any> = (props) => {
     return (
         <main>
             <div className={`z-0 ${showModal ? "opacity-50" : "opacity-100"}`}>
-                {data ? <Feed data={data} /> : "Loading"}
+                {data ? <Feed data={data} /> : <LoadingFeed />}
             </div>
             {Object.keys(user).length !== 0 ? (
                 <>
