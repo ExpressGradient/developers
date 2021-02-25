@@ -103,13 +103,13 @@ const Post: FC<PostProps> = (props) => {
             onDragEnd={handleLike}
         >
             <div className="flex items-center">
-                {/* <Image
+                <Image
                     src={props.authorImage}
                     alt="Author profile picture"
                     width={32}
                     height={32}
                     className="rounded-full col-span-1"
-                /> */}
+                />
                 <p className="mx-2 md:text-lg">{props.author}</p>
                 <p className="text-sm text-gray-500">
                     <TimeAgo
