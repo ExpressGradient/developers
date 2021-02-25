@@ -3,17 +3,18 @@ import CustomHead from "../components/CustomHead";
 import Header from "../components/Header";
 import { Provider } from "next-auth/client";
 import UserContextProvider from "../components/UserContext";
-import { SWRConfig } from "swr";
+import { ApolloProvider } from "@apollo/client";
+import client from "../apollo/client";
 
 function MyApp({ Component, pageProps }) {
     return <>
         <Provider session={pageProps.session}>
             <UserContextProvider>
-                <SWRConfig value={{ refreshInterval: 100 }}>
+                <ApolloProvider client={client}>
                     <CustomHead />
                     <Header />
                     <Component {...pageProps} />
-                </SWRConfig>
+                </ApolloProvider>
             </UserContextProvider>
         </Provider>
     </>

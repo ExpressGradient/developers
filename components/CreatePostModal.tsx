@@ -1,17 +1,35 @@
+import { gql, useMutation } from "@apollo/client";
 import { SHA256 } from "crypto-js";
-import { gql, GraphQLClient } from "graphql-request";
-import { FC, useContext, useState } from "react";
-import { Dispatch, SetStateAction } from "react";
+import { FC, useContext, useState, Dispatch, SetStateAction } from "react";
 import { UserContext } from "./UserContext";
 
 interface CreatePostModalProps {
     setShowModal: Dispatch<SetStateAction<boolean>>;
 }
 
+const CREATE_POST = gql`
+    mutation CreatePost(
+        $postId: String!
+        $content: String!
+        $userId: String!
+        $hashTagString: String!
+    ) {
+        createPost(
+            postId: $postId
+            content: $content
+            userId: $userId
+            hashTagString: $hashTagString
+        ) {
+            id
+        }
+    }
+`;
+
 const CreatePostModal: FC<CreatePostModalProps> = (props) => {
     const [body, setBody] = useState<string>("");
     const [hashTags, setHashTags] = useState<string>("");
     const { user, setUser } = useContext(UserContext);
+    const [createPost] = useMutation(CREATE_POST);
 
     const handleBodyInput = (event) => setBody(event.target.value);
     const handleHashTagsInput = (event) => setHashTags(event.target.value);
@@ -19,29 +37,13 @@ const CreatePostModal: FC<CreatePostModalProps> = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        const graphQLClient = new GraphQLClient("/api/graphql");
-        const mutation = gql`
-            mutation CreatePost(
-                $postId: String!
-                $content: String!
-                $userId: String!
-                $hashTagString: String!
-            ) {
-                createPost(
-                    postId: $postId
-                    content: $content
-                    userId: $userId
-                    hashTagString: $hashTagString
-                ) {
-                    id
-                }
-            }
-        `;
-        graphQLClient.request(mutation, {
-            postId: SHA256(body).toString(),
-            content: body,
-            userId: user.id,
-            hashTagString: hashTags,
+        createPost({
+            variables: {
+                postId: SHA256(body).toString(),
+                content: body,
+                userId: user.id,
+                hashTagString: hashTags,
+            },
         });
 
         setBody("");

@@ -1,8 +1,9 @@
 import { FC, useState, useEffect, useContext, useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { gql, GraphQLClient } from "graphql-request";
 import { UserContext } from "./UserContext";
+import { gql, useMutation } from "@apollo/client";
+import TimeAgo from "timeago-react";
 
 interface LikeButtonProps {
     isLiked: boolean;
@@ -32,10 +33,27 @@ interface PostProps {
     index: number;
 }
 
+const TOGGLE_LIKE = gql`
+    mutation ToggleLike(
+        $postId: String
+        $userId: String
+        $currentLikeStatus: Boolean
+    ) {
+        toggleLike(
+            postId: $postId
+            userId: $userId
+            currentLikeStatus: $currentLikeStatus
+        ) {
+            id
+        }
+    }
+`;
+
 const Post: FC<PostProps> = (props) => {
     const [isLiked, setIsLiked] = useState<boolean>(false);
     const { user } = useContext(UserContext);
     const isLikedRef = useRef<boolean>(false);
+    const [toggleLike] = useMutation(TOGGLE_LIKE);
 
     const likedUsers: string[] = props.likedBy.map((likedUser) => likedUser.id);
     useEffect(() => {
@@ -61,24 +79,16 @@ const Post: FC<PostProps> = (props) => {
 
     useEffect(() => {
         if (isLikedRef.current && Object.keys(user).length !== 0) {
-            const graphqlClient = new GraphQLClient("/api/graphql");
-            const mutation = gql`
-                mutation ${
-                    isLiked ? "AddLike" : "RemoveLike"
-                }($postId: String!, $userId: String!) {
-                    ${
-                        isLiked ? "addLike" : "removeLike"
-                    }(postId: $postId, userId: $userId) {
-                        id
-                    }
-                }
-            `;
-            graphqlClient.request(mutation, {
-                postId: props.id,
-                userId: user.id,
+            toggleLike({
+                variables: {
+                    postId: props.id,
+                    userId: user.id,
+                    currentLikeStatus: !isLiked,
+                },
             });
         }
         isLikedRef.current = true;
+        console.log(isLiked);
     }, [isLiked]);
 
     return (
@@ -93,15 +103,19 @@ const Post: FC<PostProps> = (props) => {
             onDragEnd={handleLike}
         >
             <div className="flex items-center">
-                <Image
+                {/* <Image
                     src={props.authorImage}
                     alt="Author profile picture"
                     width={32}
                     height={32}
                     className="rounded-full col-span-1"
-                />
+                /> */}
                 <p className="mx-2 md:text-lg">{props.author}</p>
-                <p className="text-sm text-gray-500">on {props.createdOn}</p>
+                <p className="text-sm text-gray-500">
+                    <TimeAgo
+                        datetime={Date.parse(props.createdOn).toString()}
+                    />
+                </p>
             </div>
             <p className="font-mono mt-2 text-lg break-words">
                 {props.content}

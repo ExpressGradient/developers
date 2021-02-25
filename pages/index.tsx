@@ -1,15 +1,15 @@
-import { FC, useContext, useState } from "react";
+import { gql, useQuery } from "@apollo/client";
+import { useSession } from "next-auth/client";
+import { FC, useEffect, useState } from "react";
 import Feed from "../components/Feed";
-import request, { gql } from "graphql-request";
-import useSWR from "swr";
+import LoadingFeed from "../components/LoadingFeed";
 import Image from "next/image";
 import CreatePostModal from "../components/CreatePostModal";
-import { UserContext } from "../components/UserContext";
-import LoadingFeed from "../components/Loading";
+import { motion } from "framer-motion";
 
-const getPosts = gql`
+const GET_POSTS = gql`
     query GetPosts {
-        posts {
+        getPosts {
             id
             content
             createdOn
@@ -18,36 +18,52 @@ const getPosts = gql`
                 name
                 image
             }
+            hashTags {
+                name
+            }
             likedBy {
                 id
-            }
-            hashTags {
-                id
-                name
             }
         }
     }
 `;
 
-const fetcher = (query) => request("/api/graphql", query);
+const Home: FC = () => {
+    const { data, loading, error } = useQuery(GET_POSTS);
+    const [session] = useSession();
+    const [showModal, setShowModal] = useState<boolean>();
+    const [rotateAngle, setRotateAngle] = useState<number>(0);
 
-const Home: FC<any> = (props) => {
-    const { data, error } = useSWR(getPosts, fetcher);
-    const { user, setUser } = useContext(UserContext);
+    useEffect(() => {
+        setRotateAngle(showModal ? 135 : 0);
+    }, [showModal]);
 
-    const [showModal, setShowModal] = useState<boolean>(false);
+    if (loading) {
+        return <LoadingFeed />;
+    }
+
+    if (error) {
+        console.error(error);
+        return <h1>Error</h1>;
+    }
+
+    if (!data) {
+        console.log("404 data not found");
+        return <h1>404 Data not found</h1>;
+    }
 
     return (
-        <main>
-            <div className={`z-0 ${showModal ? "opacity-50" : "opacity-100"}`}>
-                {data ? <Feed data={data} /> : <LoadingFeed />}
-            </div>
-            {Object.keys(user).length !== 0 ? (
+        <>
+            <Feed posts={data.getPosts} />
+            {session && (
                 <>
                     {showModal && (
                         <CreatePostModal setShowModal={setShowModal} />
                     )}
-                    <div className="fixed bottom-6 right-8 rounded-full shadow-md cursor-pointer hover:shadow-xl active:shadow-none z-10">
+                    <motion.div
+                        className="fixed bottom-6 right-8 rounded-full shadow-md cursor-pointer hover:shadow-xl active:shadow-none flex z-10"
+                        animate={{ rotate: rotateAngle }}
+                    >
                         <Image
                             src="/create-button.png"
                             alt="Plus Image for Creating Posts"
@@ -55,13 +71,12 @@ const Home: FC<any> = (props) => {
                             height={64}
                             quality={100}
                             onClick={() => setShowModal(!showModal)}
+                            className="transform scale-75 md:scale-100"
                         />
-                    </div>
+                    </motion.div>
                 </>
-            ) : (
-                ""
             )}
-        </main>
+        </>
     );
 };
 

@@ -4,9 +4,9 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import { signIn, useSession } from "next-auth/client";
-import { GraphQLClient } from "graphql-request";
 import { UserContext } from "./UserContext";
 import sha256 from "crypto-js/sha256";
+import { gql, useMutation } from "@apollo/client";
 
 interface NavLinkProps {
     slug: string;
@@ -29,39 +29,35 @@ const NavLink: FC<NavLinkProps> = (props) => (
     </Link>
 );
 
+const UPSERT_USER = gql`
+    mutation UpsertUser(
+        $id: String!
+        $name: String!
+        $email: String
+        $image: String
+    ) {
+        upsertUser(id: $id, name: $name, email: $email, image: $image) {
+            id
+            name
+            email
+            image
+        }
+    }
+`;
+
 const Header: FC = () => {
     const router = useRouter();
     const session = useSession()[0];
     const { user, setUser } = useContext(UserContext);
+    const [upsertUser] = useMutation(UPSERT_USER);
 
     useEffect(() => {
         if (session) {
             const { name, email, image } = session.user;
             const id: string = sha256(`${name}${email}${image}`).toString();
-            const mutation: string = /* GraphQL */ `
-                mutation UpsertUser(
-                    $id: String!
-                    $name: String!
-                    $email: String
-                    $image: String
-                ) {
-                    upsertUser(
-                        id: $id
-                        name: $name
-                        email: $email
-                        image: $image
-                    ) {
-                        id
-                        name
-                        email
-                        image
-                    }
-                }
-            `;
-            const graphQLClient = new GraphQLClient("/api/graphql");
-            graphQLClient
-                .request(mutation, { id, name, email, image })
-                .then((data) => setUser({ ...data.upsertUser }));
+            upsertUser({ variables: { id, ...session.user } }).then((result) =>
+                setUser({ ...result.data.upsertUser })
+            );
         }
     }, [session]);
 
