@@ -76,7 +76,7 @@ const resolvers = {
                     await prisma.hashTag.upsert({
                         where: { name: hashTag },
                         create: {
-                            name: hashTag,
+                            name: hashTag.replace(/\s+/g, ""),
                             postsUnderHashTag: {
                                 connect: { id: postId },
                             },
