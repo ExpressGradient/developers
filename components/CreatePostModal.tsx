@@ -5,6 +5,7 @@ import { UserContext } from "./UserContext";
 
 interface CreatePostModalProps {
     setShowModal: Dispatch<SetStateAction<boolean>>;
+    refetchAction: any;
 }
 
 const CREATE_POST = gql`
@@ -44,7 +45,7 @@ const CreatePostModal: FC<CreatePostModalProps> = (props) => {
                 userId: user.id,
                 hashTagString: hashTags,
             },
-        });
+        }).then(() => props.refetchAction());
 
         setBody("");
         setHashTags("");

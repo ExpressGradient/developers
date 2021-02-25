@@ -23,6 +23,7 @@ const Feed: FC<any> = (props) => {
                             content={post.content}
                             index={index}
                             key={post.id}
+                            refetchAction={props.refetchAction}
                         />
                     ))}
             </div>

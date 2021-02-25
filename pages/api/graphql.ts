@@ -4,5 +4,8 @@ import resolvers from "../../graphql/resolvers";
 
 export const config = { api: { bodyParser: false } };
 
-const server = new ApolloServer({ typeDefs, resolvers });
-export default server.createHandler({path: "/api/graphql"});
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+});
+export default server.createHandler({ path: "/api/graphql" });

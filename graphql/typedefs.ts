@@ -34,8 +34,17 @@ const typeDefs = gql`
 
     type Mutation {
         upsertUser(id: String, name: String, email: String, image: String): User
-        createPost(postId: String, content: String, hashTagString: String, userId: String): Post
-        toggleLike(postId: String, userId: String, currentLikeStatus: Boolean): Post
+        createPost(
+            postId: String
+            content: String
+            hashTagString: String
+            userId: String
+        ): Post
+        toggleLike(
+            postId: String
+            userId: String
+            currentLikeStatus: Boolean
+        ): Post
     }
 `;
 

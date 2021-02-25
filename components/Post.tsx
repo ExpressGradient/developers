@@ -31,6 +31,7 @@ interface PostProps {
     likedBy: any;
     createdOn: string;
     index: number;
+    refetchAction: any;
 }
 
 const TOGGLE_LIKE = gql`
@@ -85,10 +86,9 @@ const Post: FC<PostProps> = (props) => {
                     userId: user.id,
                     currentLikeStatus: !isLiked,
                 },
-            });
+            }).then(() => props.refetchAction());
         }
         isLikedRef.current = true;
-        console.log(isLiked);
     }, [isLiked]);
 
     return (

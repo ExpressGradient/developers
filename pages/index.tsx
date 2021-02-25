@@ -29,7 +29,9 @@ const GET_POSTS = gql`
 `;
 
 const Home: FC = () => {
-    const { data, loading, error } = useQuery(GET_POSTS);
+    const { data, loading, error, refetch } = useQuery(GET_POSTS, {
+        pollInterval: 1000,
+    });
     const [session] = useSession();
     const [showModal, setShowModal] = useState<boolean>();
     const [rotateAngle, setRotateAngle] = useState<number>(0);
@@ -54,11 +56,14 @@ const Home: FC = () => {
 
     return (
         <>
-            <Feed posts={data.getPosts} />
+            <Feed posts={data.getPosts} refetchAction={refetch} />
             {session && (
                 <>
                     {showModal && (
-                        <CreatePostModal setShowModal={setShowModal} />
+                        <CreatePostModal
+                            setShowModal={setShowModal}
+                            refetchAction={refetch}
+                        />
                     )}
                     <motion.div
                         className="fixed bottom-6 right-8 rounded-full shadow-md cursor-pointer hover:shadow-xl active:shadow-none flex z-10"
