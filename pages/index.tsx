@@ -56,7 +56,9 @@ const Home: FC = () => {
 
     return (
         <>
-            <Feed posts={data.getPosts} refetchAction={refetch} />
+            <div className={showModal ? "opacity-50" : "opacity-100"}>
+                <Feed posts={data.getPosts} refetchAction={refetch} />
+            </div>
             {session && (
                 <>
                     {showModal && (

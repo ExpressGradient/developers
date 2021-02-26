@@ -29,6 +29,9 @@ const resolvers = {
         async getPosts() {
             return await prisma.post.findMany({
                 include: { author: true, hashTags: true, likedBy: true },
+                orderBy: {
+                    createdOn: "asc",
+                },
             });
         },
         async getUsers() {
