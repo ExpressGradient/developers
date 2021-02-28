@@ -39,6 +39,22 @@ const resolvers = {
                 include: { postsCreated: true, postsLiked: true },
             });
         },
+        async getHashTags() {
+            let hashTags = await prisma.hashTag.findMany({
+                include: { postsUnderHashTag: true },
+            });
+
+            return hashTags
+                .sort((a, b) =>
+                    a.postsUnderHashTag.length > b.postsUnderHashTag.length
+                        ? -1
+                        : a.postsUnderHashTag.length <
+                          b.postsUnderHashTag.length
+                        ? 1
+                        : 0
+                )
+                .slice(0, 10);
+        },
     },
     Mutation: {
         async upsertUser(_parent, { id, name, email, image }: UpsertUserArgs) {

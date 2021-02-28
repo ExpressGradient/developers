@@ -120,13 +120,13 @@ const Post: FC<PostProps> = (props) => {
             <p className="font-mono mt-2 text-lg break-words">
                 {props.content}
             </p>
-            <div className="flex flex-wrap my-3">
+            <div className="flex flex-wrap my-3 font-mono md:text-lg">
                 {"{"}
-                <p className="font-serif mx-2">
+                <p className="mx-2">
                     <span className="text-green-800">"likes": </span>
                     {props.likedBy.length},
                 </p>
-                <p className="font-serif text-green-800 mr-2">"hashTags": </p>
+                <p className="text-green-800 mr-2">"hashTags": </p>
                 <ul className="flex flex-wrap">
                     {props.hashTags.map((hashTag, index) => (
                         <li

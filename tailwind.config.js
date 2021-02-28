@@ -11,7 +11,9 @@ module.exports = {
     },
     variants: {
         extend: {
-            boxShadow: ["hover", "active"]
+            boxShadow: ["hover", "active"],
+            transform: ["hover", "active"],
+            translate: ["hover", "active"]
         },
     },
     plugins: [],

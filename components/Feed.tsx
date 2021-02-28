@@ -1,12 +1,11 @@
 import { FC } from "react";
 import Post from "./Post";
+import Tabs from "./Tabs";
 
 const Feed: FC<any> = (props) => {
     return (
         <div className="mt-4">
-            <h1 className="text-center font-serif text-3xl text-purple-800 mb-3 md:text-4xl">
-                Feed
-            </h1>
+            <Tabs />
             <div className="md:w-1/2 mx-auto">
                 {props.posts
                     .slice(0)

@@ -30,6 +30,7 @@ const typeDefs = gql`
     type Query {
         getPosts: [Post]
         getUsers: [User]
+        getHashTags: [HashTag]
     }
 
     type Mutation {
