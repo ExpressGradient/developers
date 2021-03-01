@@ -1,5 +1,6 @@
 import { FC, useState } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/router";
 
 interface HashTagProps {
     id: string;
@@ -13,6 +14,7 @@ interface TrendingListProps {
 
 const HashTag: FC<HashTagProps> = (props) => {
     const [isHovered, setHovered] = useState<boolean>(false);
+    const router = useRouter();
 
     return (
         <motion.div
@@ -22,9 +24,10 @@ const HashTag: FC<HashTagProps> = (props) => {
             }`}
             onHoverStart={() => setHovered(true)}
             onHoverEnd={() => setHovered(false)}
+            onClick={() => router.push(`/hashtag/${props.name}`)}
         >
             <h3
-                className={`text-lg md:text-xl underline ${
+                className={`text-lg md:text-xl ${
                     isHovered ? "text-white" : "text-purple-700"
                 }`}
             >

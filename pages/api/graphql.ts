@@ -1,6 +1,6 @@
 import { ApolloServer } from "apollo-server-micro";
-import typeDefs from "../../graphql/typedefs";
-import resolvers from "../../graphql/resolvers";
+import typeDefs from "../../apollo/typedefs";
+import resolvers from "../../apollo/resolvers";
 
 export const config = { api: { bodyParser: false } };
 

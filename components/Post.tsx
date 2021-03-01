@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { UserContext } from "./UserContext";
 import { gql, useMutation } from "@apollo/client";
 import TimeAgo from "timeago-react";
+import Link from "next/link";
 
 interface LikeButtonProps {
     isLiked: boolean;
@@ -133,7 +134,9 @@ const Post: FC<PostProps> = (props) => {
                             key={index}
                             className="mr-2 underline text-purple-900 hover:text-purple-500 cursor-pointer"
                         >
-                            #{hashTag.name}
+                            <Link href={`/hashtag/${hashTag.name}`}>
+                                <a>{hashTag.name}</a>
+                            </Link>
                             {index + 1 !== props.hashTags.length ? "," : ""}
                         </li>
                     ))}

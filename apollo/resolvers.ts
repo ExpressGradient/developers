@@ -55,6 +55,15 @@ const resolvers = {
                 )
                 .slice(0, 10);
         },
+        async getPostsUnderHashTag(_parent, { name }) {
+            return await prisma.hashTag
+                .findUnique({
+                    where: { name },
+                })
+                .postsUnderHashTag({
+                    include: { author: true, likedBy: true, hashTags: true },
+                });
+        },
     },
     Mutation: {
         async upsertUser(_parent, { id, name, email, image }: UpsertUserArgs) {
