@@ -101,6 +101,7 @@ const Header: FC = () => {
                             width={48}
                             height={48}
                             className="rounded-full"
+                            onClick={() => router.push(`/user/${user.name}`)}
                         />
                     </button>
                 ) : (

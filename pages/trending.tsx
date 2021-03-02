@@ -20,7 +20,11 @@ const Trending: FC = () => {
     const { data, loading } = useQuery(GET_HASHTAGS, { pollInterval: 1000 });
 
     if (loading) {
-        return <LoadingFeed />;
+        return (
+            <LoadingFeed>
+                <Tabs />
+            </LoadingFeed>
+        );
     }
 
     return (

@@ -34,7 +34,13 @@ const PostsUnderHashTag: FC = () => {
     });
 
     if (loading) {
-        return <LoadingFeed />;
+        return (
+            <LoadingFeed>
+                <h1 className="text-2xl text-purple-700 text-center font-serif">
+                    Posts under <span className="text-purple-800">#{name}</span>
+                </h1>
+            </LoadingFeed>
+        );
     }
 
     if (!data) {

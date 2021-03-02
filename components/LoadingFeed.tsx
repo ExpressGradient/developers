@@ -14,11 +14,9 @@ const LoadingLine: FC<LoadingLineProps> = (props) => (
     ></motion.div>
 );
 
-const LoadingFeed: FC = () => (
+const LoadingFeed: FC = (props) => (
     <>
-        <div className="mt-4">
-            <Tabs />
-        </div>
+        <div className="mt-4">{props.children}</div>
         <div className="md:w-1/2 mx-auto">
             {[1, 2, 3].map((_, index) => (
                 <div

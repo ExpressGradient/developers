@@ -32,6 +32,9 @@ const typeDefs = gql`
         getUsers: [User]
         getHashTags: [HashTag]
         getPostsUnderHashTag(name: String): [Post]
+        getUser(name: String): User
+        getUserCreatedPosts(name: String): [Post]
+        getUserLikedPosts(name: String): [Post]
     }
 
     type Mutation {

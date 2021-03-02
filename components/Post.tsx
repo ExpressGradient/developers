@@ -111,7 +111,11 @@ const Post: FC<PostProps> = (props) => {
                     height={32}
                     className="rounded-full col-span-1"
                 />
-                <p className="mx-2 md:text-lg">{props.author}</p>
+                <Link href={`/user/${props.author}`}>
+                    <a className="mx-2 md:text-lg hover:underline">
+                        {props.author}
+                    </a>
+                </Link>
                 <p className="text-sm text-gray-500">
                     <TimeAgo
                         datetime={Date.parse(props.createdOn).toString()}

@@ -56,12 +56,39 @@ const resolvers = {
                 .slice(0, 10);
         },
         async getPostsUnderHashTag(_parent, { name }) {
-            return await prisma.hashTag
+            let posts = await prisma.hashTag
                 .findUnique({
                     where: { name },
                 })
                 .postsUnderHashTag({
                     include: { author: true, likedBy: true, hashTags: true },
+                });
+
+            return posts.sort((a, b) =>
+                a.createdOn.getTime() > b.createdOn.getTime()
+                    ? -1
+                    : a.createdOn.getTime() < b.createdOn.getTime()
+                    ? 1
+                    : 0
+            );
+        },
+        async getUser(_parent, { name }) {
+            return await prisma.user.findUnique({
+                where: { name },
+            });
+        },
+        async getUserCreatedPosts(_parent, { name }) {
+            return await prisma.user
+                .findUnique({ where: { name } })
+                .postsCreated({
+                    include: { author: true, hashTags: true, likedBy: true },
+                });
+        },
+        async getUserLikedPosts(_parent, { name }) {
+            return await prisma.user
+                .findUnique({ where: { name } })
+                .postsLiked({
+                    include: { author: true, hashTags: true, likedBy: true },
                 });
         },
     },

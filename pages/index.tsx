@@ -6,6 +6,7 @@ import LoadingFeed from "../components/LoadingFeed";
 import Image from "next/image";
 import CreatePostModal from "../components/CreatePostModal";
 import { motion } from "framer-motion";
+import Tabs from "../components/Tabs";
 
 const GET_POSTS = gql`
     query GetPosts {
@@ -41,7 +42,11 @@ const Home: FC = () => {
     }, [showModal]);
 
     if (loading) {
-        return <LoadingFeed />;
+        return (
+            <LoadingFeed>
+                <Tabs />
+            </LoadingFeed>
+        );
     }
 
     if (error) {
